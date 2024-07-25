@@ -1,0 +1,93 @@
+---
+title: "Exploratory Data Analysis - ST558 FINAL PROJECT"
+author: "Kyra Kapsaskis"
+format: html
+editor: visual
+---
+## Introduction to the Data
+
+For this project, we will be looking at .......
+
+The purpose of our EDA is to... and we want to fit the models because...
+
+```{r}
+# load in the necessary packages
+
+
+```
+
+## Read in the Diabetes data from the Diabetes Health Indicators Dataset
+
+Reading about the data at https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/ we can get some info on the variables. ...
+
+Our response variable will be the Diabetes_binary variable.
+
+```{r}
+# read in the data using a relative path
+
+```
+
+It's important that we create an object for the response variable because if anyone else ever wanted to use our code, they could just name their response variable accordingly and the code would still work for them. 
+
+```{r}
+# create an object for the response variable
+```
+
+In order to run analyses on the data, we must change some of the variables to factors so that it can be understood that they are not just character strings but repeating categories that have specific meaning. 
+
+```{r}
+# convert a lot of the variables to factors with meaningful level names
+
+
+```
+
+We need to check for missing data so that if there is missing data, we can give R instructions for how to handle it as we are fitting our models and running analyses. 
+
+```{r}
+# check for missing data, etc.
+```
+
+## Summarizations
+
+Now we are going to find some summary statistics, which are helpful for....
+
+```{r}
+# producing summary statistics
+
+
+```
+
+Now let's visualize some of the summary statistics with a few plots.
+
+This first plot is exploring... and ... variables and this is meaningful because... The plot shows that the relationship....
+
+```{r}
+# plot 1
+
+
+```
+
+This second plot is exploring... and ... variables and this is meaningful because... The plot shows that the relationship....
+
+
+```{r}
+# plot 2
+
+
+```
+
+
+This third plot is exploring... and ... variables and this is meaningful because... The plot shows that the relationship....
+
+
+```{r}
+# plot 3
+
+
+```
+
+```{r}
+# [Click here for the Modeling Page](Modeling.html)
+```
+
+
