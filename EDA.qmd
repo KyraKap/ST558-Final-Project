@@ -23,16 +23,27 @@ library(Hmisc)
 library(randomForest)
 ```
 
-## Read in the Diabetes data from the Diabetes Health Indicators Dataset
+#### Read in the Diabetes data from the Diabetes Health Indicators Dataset
 
 Reading about the data at https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/ we can get some info on the variables. ...
 
 Our response variable will be the Diabetes_binary variable.
 
 ```{r}
+# check what directory we are using
+getwd()
+```
+
+```{r}
+# set the directory
+setwd("/Users/kyrakapsaskis/ST558 Final Project Folder/ST558-Final-Project")
+# this would be followed by read.csv with the file name instead of path
+```
+
+```{r}
 # read in the data using a relative path
 
-diabetes_data <- read.csv("diabetes_binary_health_indicators_BRFSS2015.csv")
+diabetes_data <- read.csv("/Users/kyrakapsaskis/ST558 Final Project Folder/ST558-Final-Project/diabetes_binary_health_indicators_BRFSS2015.csv")
 
 ```
 
@@ -40,124 +51,70 @@ Let's preview the data to make sure it's been read in properly
 
 ```{r}
 diabetes_data
+
 ```
 
-Looks good!
+## The data looks good! Now let's move forward!
 
-## What do the variables mean?
+## What types of data do we have? What do we want?
 
-#### Diabetes_binary
-DIABETE3
-0 = no diabetes, 1 = diabetes
+#### Numeric variables
 
-#### HighBP
-_RFHYPE5
-0 = no high BP, 1 = high BP
+The numeric variables are BMI, physical health, and mental health, and these can be kept the same for the models that we will create.
 
-#### HighChol
-0 = no high cholesterol, 1 = high cholesterol
+#### Categorical variables
 
-#### CholCheck
-_CHOLCHK
-0 = no cholesterol check in 5 years, 1 = yes cholesterol check in 5 years
+The categorical variables are age, general health, education, income, sex (binary, but not a yes/no binary), but they are being represented by numbers, so we must convert them to factors with labels so they are more interpretable. In order to know how to relabel them, we must look them up in the [CODEBOOK](https://www.cdc.gov/brfss/annual_data/2015/pdf/codebook15_llcp.pdf) and read about how they're coded.
 
-#### BMI
+-   Age is `_AGEG5YR` in the codebook
 
-Body Mass Index
+-   General Health is `GENHLTH` in the codebook
 
-#### Smoker
+-   Education is `EDUCA` in the codebook
 
-Have you smoked at least 100 cigarettes in your entire life? \[Note: 5 packs = 100 cigarettes\] 0 = no 1 = yes
+-   Income is `INCOME2` in the codebook
 
-#### Stroke
+-   Sex is `SEX` in the codebook
 
-Were you ever told you had a stroke? 0 = no 1 = yes
+-   The codebook can be found [here](https://www.cdc.gov/brfss/annual_data/2015/pdf/codebook15_llcp.pdf).
 
-#### HeartDiseaseorAttack
+### Binary variables - all the rest
 
-coronary heart disease (CHD) or myocardial infarction (MI)? 0 = no, 1 = yes
-
-#### PhysActivity
-
-physical activity in past 30 days - not including job? 0 = no, 1 = yes
-
-#### Fruits
-
-Consume Fruit 1 or more times per day? 0 = no, 1 = yes
-
-#### Veggies
-
-Consume Vegetables 1 or more times per day? 0 = no, 1 = yes
-
-#### HvyAlcoholConsump
-
-(adult men \>=14 drinks per week and adult women\>=7 drinks per week) 0 = no, 1 = yes
-
-#### AnyHealthcare
-
-Have any kind of health care coverage, including health insurance, prepaid plans such as HMO, etc. 0 = no 1 = yes
-
-#### NoDocbcCost
-
-Was there a time in the past 12 months when you needed to see a doctor but could not because of cost? 0 = no 1 = yes
-
-#### GenHlth
-
-Would you say that in general your health is: scale 1-5 1 = excellent 2 = very good 3 = good 4 = fair 5 = poor
-
-#### MentHlth
-
-days of poor mental health scale 1-30 days
-
-#### PhysHlth
-
-physical illness or injury days in past 30 days scale 1-30
-
-#### DiffWalk
-
-Do you have serious difficulty walking or climbing stairs? 0 = no 1 = yes
-
-#### Sex
-
-0 = female 1 = male
+These are also categorical variables but they all follow the No/Yes pattern with 0's and 1's so it will be easier to change them all to factors.
 
 ```{r}
-help(mutate)
+describe(diabetes_data$GenHlth)
 ```
 
-
 ```{r}
+# convert the variables to factors with meaningful level names
+# 0 is female, 1 is male
 
 factor_data <- diabetes_data %>%
   mutate( 
-    Diabetes_binary = factor(Diabetes_binary, levels = c(0, 1), labels = c("No", "Yes")),
-    HighBP = factor(HighBP, levels = c(0, 1), labels = c("No", "Yes")),
-    HighChol = factor(HighChol, levels = c(0, 1), labels = c("No", "Yes")),
-    # descriptions of variable added in a legend or caption, doesn't need to be in label - keep yes/no
-    CholCheck = factor(CholCheck, levels = c(0, 1), labels = c("Not checked recently", "Checked recently")),
-    Smoker_NoYes = factor(Smoker, levels = c(0, 1), labels = c("No", "Yes")),
-    Stroke_NoYes = factor(Stroke, levels = c(0, 1), labels = c("No", "Yes")),
-    HeartDiseaseorAttack = factor(HeartDiseaseorAttack, levels = c(0, 1), labels = c("No CHD or MI", "Yes CHD or MI")),
-    PhysActivity_last30days = factor(PhysActivity, levels = c(0, 1), labels = c("No in past 30 days", "Yes in past 30 days")),
-    
-    Sex = factor(Sex, levels = c(0, 1), labels = c("Female", "Male")),
-    # age examples... Age1, Age2....Age 18-25
+    Diabetes_factor = factor(Diabetes_binary, levels = c(0, 1), labels = c("No", "Yes")),
+    HighBP_factor = factor(HighBP, levels = c(0, 1), labels = c("No", "Yes")),
+    HighChol_factor = factor(HighChol, levels = c(0, 1), labels = c("No", "Yes")),
+    CholCheck_factor = factor(CholCheck, levels = c(0, 1), labels = c("No", "Yes")),
+    Smoker_factor = factor(Smoker, levels = c(0, 1), labels = c("No", "Yes")),
+    Stroke_factor = factor(Stroke, levels = c(0, 1), labels = c("No", "Yes")),
+    HeartDiseaseorAttack_factor = factor(HeartDiseaseorAttack, levels = c(0, 1), labels = c("No", "Yes")),
+    PhysActivity_factor = factor(PhysActivity, levels = c(0, 1), labels = c("No", "Yes")),
+    Fruits_factor = factor(Fruits, levels = c(0, 1), labels = c("No", "Yes")),
+    Veggies_factor = factor(Veggies, levels = c(0, 1), labels = c("No", "Yes")),
+    HvyAlcoholConsump_factor = factor(HvyAlcoholConsump, levels = c(0, 1), labels = c("No", "Yes")),
+    AnyHealthcare_factor = factor(AnyHealthcare, levels = c(0, 1), labels = c("No", "Yes")),
+    NoDocbcCost_factor = factor(NoDocbcCost, levels = c(0, 1), labels = c("No", "Yes")),
+    GenHlth_factor = factor(GenHlth, levels = c(1:5), labels = c("Excellent", "Very good", "Good", "Fair", "Poor")),
+    Diffwalk_factor = factor(DiffWalk, levels = c(0, 1), labels = c("No", "Yes")),
+    Sex_factor = factor(Sex, levels = c(0, 1), labels = c("Female", "Male")),
+    # non-binary
+    Age_factor = factor(Age, levels = c(1:13), labels = c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80 or older")),
+    Education_factor = factor(Education, levels = c(1:6), labels = c("No school", "Elementary", "Some high school", "High school graduate", "Some college or technical school", "College graduate")),
+    Income_factor = factor(Income, levels = c(1:8), labels = c("<$10k", "$10k-$15k", "$15k-$20k", "$20k-$25k", "$25k-$35k", "$35k-$50k", "$50k-$75k", "$75k<="))
   )
 
-```
 
-
-```{r}
-# checking to see which ages are actually used in the data (14 is not used, so no need to include it in factor transformation)
-table(diabetes_data$Age)
-```
-
-```{r}
-# numeric variables - bmi, physical health, mental health - keep these the same
-
-# everything else to factor (yes/no, 0 always no)
-
-# age, general health, education, income, sex (binary but not yes/no, 0 is female, 1 is male) - these aren't binary
 ```
 
 ```{r}
@@ -181,37 +138,18 @@ plot()
 # 
 ```
 
-
-#### Age
-
-13-level age category (\_AGEG5YR see codebook) 1 = 18-24 9 = 60-64 13 = 80 or older
-
-#### Education
-
-Education level (EDUCA see codebook) scale 1-6 1 = Never attended school or only kindergarten 2 = elementary etc.
-
-#### Income
-
-Income scale (INCOME2 see codebook) scale 1-8 1 = less than \$10,000 5 = less than \$35,000 8 = \$75,000 or more
-
-In order to run analyses on the data, we must change some of the variables to factors so that it can be understood that they are not just character strings but repeating categories that have specific meaning.
-
-```{r}
-# convert a lot of the variables to factors with meaningful level names
-
-
-```
-
-It's important that we create an object for the response variable because if anyone else ever wanted to use our code, they could just name their response variable accordingly and the code would still work for them.
-
-```{r}
-# create an object for the response variable
-```
-
 We need to check for missing data so that if there is missing data, we can give R instructions for how to handle it as we are fitting our models and running analyses.
 
 ```{r}
 # check for missing data, etc.
+
+describe(data)
+
+# or sum(is.na(data))
+
+# or str(data)
+
+# summary() also shows na's
 ```
 
 ## Summarizations
@@ -219,10 +157,36 @@ We need to check for missing data so that if there is missing data, we can give 
 Now we are going to find some summary statistics, which are helpful for....
 
 ```{r}
+# checking to see which ages are actually used in the data (14 is not used, so no need to include it in factor transformation)
+table(diabetes_data$Age)
+```
+
+```{r}
 # producing summary statistics
 
 
 ```
+
+```{r}
+help(summarize)
+```
+
+
+```{r}
+factor_data |>
+  group_by(Diabetes_factor) |>
+  dplyr::summarize(
+    mean_BMI = mean(BMI),
+    sd_BMI = sd(BMI),
+    mean_PhysHlth = mean(PhysHlth),
+    sd_PhysHlth = sd(PhysHlth),
+    mean_MentHlth = mean(MentHlth),
+    sd_MentHlth = sd(MentHlth)
+  )
+
+
+```
+
 
 Now let's visualize some of the summary statistics with a few plots.
 
@@ -231,14 +195,12 @@ This first plot is exploring... and ... variables and this is meaningful because
 ```{r}
 # plot 1
 
-
 ```
 
 This second plot is exploring... and ... variables and this is meaningful because... The plot shows that the relationship....
 
 ```{r}
 # plot 2
-
 
 ```
 
@@ -247,9 +209,12 @@ This third plot is exploring... and ... variables and this is meaningful because
 ```{r}
 # plot 3
 
-
 ```
 
+`[Click here for the Modeling Page](Modeling.html)`
+
 ```{r}
-# [Click here for the Modeling Page](Modeling.html)
+
+# when modeling, put parameters as smaller, and one predictor, small cv, should make it faster, check to make sure its working, no more than 5 minutes. always test it with a simple model to see if it works because the bigger model 
+
 ```
