@@ -47,81 +47,152 @@ Looks good!
 ## What do the variables mean?
 
 #### Diabetes_binary
-0 = no diabetes, 1 = prediabetes, 2 = diabetes
+DIABETE3
+0 = no diabetes, 1 = diabetes
 
 #### HighBP
+_RFHYPE5
 0 = no high BP, 1 = high BP
 
 #### HighChol
 0 = no high cholesterol, 1 = high cholesterol
 
 #### CholCheck
+_CHOLCHK
 0 = no cholesterol check in 5 years, 1 = yes cholesterol check in 5 years
 
 #### BMI
+
 Body Mass Index
 
 #### Smoker
-Have you smoked at least 100 cigarettes in your entire life? [Note: 5 packs = 100 cigarettes] 0 = no 1 = yes
+
+Have you smoked at least 100 cigarettes in your entire life? \[Note: 5 packs = 100 cigarettes\] 0 = no 1 = yes
 
 #### Stroke
+
 Were you ever told you had a stroke? 0 = no 1 = yes
 
 #### HeartDiseaseorAttack
+
 coronary heart disease (CHD) or myocardial infarction (MI)? 0 = no, 1 = yes
 
 #### PhysActivity
+
 physical activity in past 30 days - not including job? 0 = no, 1 = yes
 
 #### Fruits
+
 Consume Fruit 1 or more times per day? 0 = no, 1 = yes
 
 #### Veggies
+
 Consume Vegetables 1 or more times per day? 0 = no, 1 = yes
 
 #### HvyAlcoholConsump
-(adult men >=14 drinks per week and adult women>=7 drinks per week) 0 = no, 1 = yes
+
+(adult men \>=14 drinks per week and adult women\>=7 drinks per week) 0 = no, 1 = yes
 
 #### AnyHealthcare
+
 Have any kind of health care coverage, including health insurance, prepaid plans such as HMO, etc. 0 = no 1 = yes
 
 #### NoDocbcCost
+
 Was there a time in the past 12 months when you needed to see a doctor but could not because of cost? 0 = no 1 = yes
 
 #### GenHlth
+
 Would you say that in general your health is: scale 1-5 1 = excellent 2 = very good 3 = good 4 = fair 5 = poor
 
 #### MentHlth
+
 days of poor mental health scale 1-30 days
 
 #### PhysHlth
+
 physical illness or injury days in past 30 days scale 1-30
 
 #### DiffWalk
+
 Do you have serious difficulty walking or climbing stairs? 0 = no 1 = yes
 
 #### Sex
+
 0 = female 1 = male
 
 ```{r}
+help(mutate)
+```
 
-data <- data %>%
+
+```{r}
+
+factor_data <- diabetes_data %>%
   mutate( 
+    Diabetes_binary = factor(Diabetes_binary, levels = c(0, 1), labels = c("No", "Yes")),
+    HighBP = factor(HighBP, levels = c(0, 1), labels = c("No", "Yes")),
+    HighChol = factor(HighChol, levels = c(0, 1), labels = c("No", "Yes")),
+    # descriptions of variable added in a legend or caption, doesn't need to be in label - keep yes/no
+    CholCheck = factor(CholCheck, levels = c(0, 1), labels = c("Not checked recently", "Checked recently")),
+    Smoker_NoYes = factor(Smoker, levels = c(0, 1), labels = c("No", "Yes")),
+    Stroke_NoYes = factor(Stroke, levels = c(0, 1), labels = c("No", "Yes")),
+    HeartDiseaseorAttack = factor(HeartDiseaseorAttack, levels = c(0, 1), labels = c("No CHD or MI", "Yes CHD or MI")),
+    PhysActivity_last30days = factor(PhysActivity, levels = c(0, 1), labels = c("No in past 30 days", "Yes in past 30 days")),
+    
     Sex = factor(Sex, levels = c(0, 1), labels = c("Female", "Male")),
-    Smoker = factor(Smoker, levels = c(0, 1), labels = c("No", "Yes")),
+    # age examples... Age1, Age2....Age 18-25
   )
 
 ```
 
 
+```{r}
+# checking to see which ages are actually used in the data (14 is not used, so no need to include it in factor transformation)
+table(diabetes_data$Age)
+```
+
+```{r}
+# numeric variables - bmi, physical health, mental health - keep these the same
+
+# everything else to factor (yes/no, 0 always no)
+
+# age, general health, education, income, sex (binary but not yes/no, 0 is female, 1 is male) - these aren't binary
+```
+
+```{r}
+#check distribution
+
+hist()
+ggplot()
+# ggplot is cleanest
+plot()
+
+# for binary variables, use summary()
+
+# visually
+# binary - contingency table
+# categorical - use the multi-categorical and plot for each, univariate, histogram for age, general health, education, income.
+# bivariate graphs for binary variables- summary(diabetes_data)
+  # use one of the univariate plots and use color or fill of another variable that is binary - one way to do this, stacked method
+  # or do a grouping of bars - put the same info but next to each other, now you have the counts of each grouping and then together it would make that group.the different colors are side by side
+# use the diabetes binary variable to show that in a grouped plot - how does the response interact with the variables
+# numeric - also do univariate, this would be a dot plot, bar plots, either one, what looks best, makes sense, if it looks messy, change visual aid
+# 
+```
+
+
 #### Age
-13-level age category (_AGEG5YR see codebook) 1 = 18-24 9 = 60-64 13 = 80 or older
+
+13-level age category (\_AGEG5YR see codebook) 1 = 18-24 9 = 60-64 13 = 80 or older
 
 #### Education
+
 Education level (EDUCA see codebook) scale 1-6 1 = Never attended school or only kindergarten 2 = elementary etc.
 
 #### Income
-Income scale (INCOME2 see codebook) scale 1-8 1 = less than $10,000 5 = less than $35,000 8 = $75,000 or more
+
+Income scale (INCOME2 see codebook) scale 1-8 1 = less than \$10,000 5 = less than \$35,000 8 = \$75,000 or more
 
 In order to run analyses on the data, we must change some of the variables to factors so that it can be understood that they are not just character strings but repeating categories that have specific meaning.
 
