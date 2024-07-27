@@ -183,6 +183,24 @@ plot()
 # 
 ```
 
+```{r}
+my_graph <- ggplot(factor_data |> 
+                     drop_na(BMI, Diabetes_factor),
+                   aes(x = Diabetes_factor, y = BMI, fill = Diabetes_factor)) 
+
+my_graph + 
+  geom_boxplot() +  
+  geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
+  facet_wrap(~ Sex_factor)
+```
+```{r}
+my_graph2 <- ggplot(factor_data |> 
+                     drop_na(MentHlth, PhysHlth),
+                   aes(x = PhysHlth, y = MentHlth, fill = PhysHlth)) 
+
+my_graph2 + geom_point(size = 0.5) +      
+  geom_smooth(method = lm)
+```
 
 
 
@@ -221,6 +239,10 @@ factor_data |>
 
 ```
 
+```{r}
+my_table <- table(factor_data$Diabetes_factor, factor_data$PhysHlth)
+plot(my_table)
+```
 
 Now let's visualize some of the summary statistics with a few plots.
 

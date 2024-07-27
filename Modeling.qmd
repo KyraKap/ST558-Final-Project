@@ -1,0 +1,8 @@
+---
+title: "ST558 Final Project Modeling Document"
+author: "Kyra Kapsaskis"
+format: html
+editor: visual
+---
+
+## Splitting the data into a test and training set
