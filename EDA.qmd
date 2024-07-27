@@ -117,6 +117,51 @@ factor_data <- diabetes_data %>%
 
 ```
 
+We need to check for missing data so that if there is missing data, we can give R instructions for how to handle it as we are fitting our models and running analyses.
+
+```{r}
+# checking for missing data. Other methods are to use str(data), summary(data), or describe(data).
+
+sum(is.na(factor_data))
+
+```
+
+#### Hooray, no missing data!!
+
+```{r}
+twoway_table1 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
+twoway_table2 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
+twoway_table3 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
+twoway_table4 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
+twoway_table5 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
+```
+
+```{r}
+help(hist)
+```
+
+```{r}
+physhlth_plot <- ggplot(factor_data, aes(x = PhysHlth)) +
+  geom_histogram(binwidth = 2, fill = "light blue", color = "black") +
+  labs(title = "Distribution of 'Not Good' Physical Health Days", x = "Now thinking about your physical health,\n which includes physical illness and injury, for how many days during \n the past 30 days was your physical health not good?", y = "Frequency")
+```
+
+
+```{r}
+menthlth_plot <- ggplot(factor_data, aes(x = MentHlth)) +
+  geom_histogram(binwidth = 2, fill = "light blue", color = "black") +
+  labs(title = "Distribution of 'Not Good' Mental Health Days", x = "Now thinking about your mental health, \n which includes stress, depression, and problems with emotions, \n for how many days during the past 30 days \n was your mental health not good?", y = "Frequency")
+```
+
+
+
+```{r}
+bmi_plot <- ggplot(factor_data, aes(x = BMI)) +
+  geom_histogram(binwidth = 2, fill = "light blue", color = "black") +
+  labs(title = "Distribution of BMI", x = "BMI", y = "Frequency")
+```
+
+
 ```{r}
 #check distribution
 
@@ -138,19 +183,8 @@ plot()
 # 
 ```
 
-We need to check for missing data so that if there is missing data, we can give R instructions for how to handle it as we are fitting our models and running analyses.
 
-```{r}
-# check for missing data, etc.
 
-describe(data)
-
-# or sum(is.na(data))
-
-# or str(data)
-
-# summary() also shows na's
-```
 
 ## Summarizations
 
