@@ -8,27 +8,51 @@ editor: visual
 # Splitting the data into a test and training set
 
 ```{r}
+help("createDataPartition")
+```
+
+
+```{r}
 # set a seed for reproducibility
-set.seed(10)
+set.seed(101)
 
 #indices to split on
-train <- sample(1:nrow(heart_data), size = nrow(heart_data)*0.8)
-test <- dplyr::setdiff(1:nrow(heart_data), train)
+# train <- sample(1:nrow(heart_data), size = nrow(heart_data)*0.8)
+# test <- dplyr::setdiff(1:nrow(heart_data), train)
 
 #subset
-heartTrain <- heart_data[train, ]
-heartTest <- heart_data[test, ]
+# heartTrain <- heart_data[train, ]
+# heartTest <- heart_data[test, ]
+
+split <- createDataPartition(y = factor_data$Diabetes_factor, p = 0.7, list = FALSE)
+train <- factor_data[split, ]
+test <- factor_data[-split, ]
+
+
 ```
 
 # fit three candidate logistic regression models and choose the best model using CV with log-loss as your metric.
 
 ```{r}
+help(trainControl)
+```
+
+
+```{r}
 # defining cv arguments that will be used as an argument inside each model function
 
-cv_settings <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+cv_settings <- trainControl(method = "cv", number = 2, summaryFunction = mnLogLoss, classProbs = TRUE) #need to change this to five
 ```
 
 ## First Logistic Regression
+```{r}
+install.packages("rpart")
+```
+```{r}
+library(rpart)
+```
+
+
 
 ```{r}
 # R will do the dummy coding for you so you can use the regular categorical variables, not dummy. use factor variables
@@ -37,7 +61,12 @@ cv_settings <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
 #             data = FGData, 
 #              family = "binomial")
 
-my_logreg_1 <- train(HeartDisease_factor ~ ChestPainType.ATA + RestingECG.ST, data = heartTrain, method = "glm", family = "binomial", trControl = cv_settings)
+my_logreg_1 <- train(Diabetes_factor ~ Sex_factor + Age_factor, 
+                     data = train, 
+                     method = "rpart",
+                      
+                     trControl = cv_settings,
+                     metric = "logLoss")
 
 ```
 
@@ -46,7 +75,7 @@ my_logreg_1
 ```
 
 ```{r}
-log1_predict <- predict(my_logreg_1, heartTest)
+log1_predict <- predict(my_logreg_1, test)
 ```
 
 ```{r}
@@ -61,22 +90,35 @@ summary(log1_predict)
 
 
 ```{r}
-my_logreg_2 <- train(HeartDisease_factor ~ Age + Cholesterol, data = heartTrain, method = "glm", family = "binomial", trControl = cv_settings)
+
+my_logreg_2 <- train(Diabetes_factor ~ MentHlth, 
+                     data = train, 
+                     method = "glm", 
+                     trControl = cv_settings,
+                     metric = "logLoss")
 
 my_logreg_2
 
-log2_predict <- predict(my_logreg_2, heartTest)
+log2_predict <- predict(my_logreg_2, test)
 
 summary(log2_predict)
 
+```
+```{r}
+describe(factor_data$Diabetes_factor)
 ```
 
 ## Third Logistic Regression
 
 ```{r}
-my_logreg_3 <- train(HeartDisease_factor ~ MaxHR + RestingBP, data = heartTrain, method = "glm", family = "binomial", trControl = cv_settings)
 
-log3_predict <- predict(my_logreg_3, heartTest)
+my_logreg_3 <- train(Diabetes_factor ~ Fruits_factor + GenHlth_factor, 
+                     data = train, 
+                     method = "glm", 
+                     trControl = cv_settings,
+                     metric = "logLoss")
+
+log3_predict <- predict(my_logreg_3, test)
 
 summary(log3_predict)
 ```
@@ -84,13 +126,30 @@ summary(log3_predict)
 ## Confusion Matrices
 
 ```{r}
-confusionMatrix(log1_predict, heartTest$HeartDisease_factor)
-confusionMatrix(log2_predict, heartTest$HeartDisease_factor)
-confusionMatrix(log3_predict, heartTest$HeartDisease_factor)
+# confusionMatrix(log1_predict, heartTest$HeartDisease_factor)
+# confusionMatrix(log2_predict, heartTest$HeartDisease_factor)
+# confusionMatrix(log3_predict, heartTest$HeartDisease_factor)
 ```
 
 
+# Tree models
 
+```{r}
+library(tidyverse)
+library(haven)
+library(knitr)
+library(rgl)
+library(tree)
+```
+
+```{r}
+my_tree <- train(Diabetes_factor ~ PhysHlth, 
+                data = train, 
+                method = "rpart", 
+                trControl = cv_settings,  
+                tuneGrid = expand.grid(cp = seq(0, 0.1, 0.001)))
+my_tree
+```
 
 
 

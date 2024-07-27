@@ -264,7 +264,6 @@ This third plot is exploring... and ... variables and this is meaningful because
 
 ```{r}
 # plot 3
-
 ```
 
 `[Click here for the Modeling Page](Modeling.html)`
