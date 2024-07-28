@@ -41,7 +41,7 @@ help(trainControl)
 ```{r}
 # defining cv arguments that will be used as an argument inside each model function
 
-cv_settings <- trainControl(method = "cv", number = 2, summaryFunction = mnLogLoss, classProbs = TRUE) #need to change this to five
+cv_settings <- trainControl(method = "cv", number = 5, summaryFunction = mnLogLoss, classProbs = TRUE) #need to change this to five
 ```
 
 ## First Logistic Regression
@@ -126,9 +126,9 @@ summary(log3_predict)
 ## Confusion Matrices
 
 ```{r}
-# confusionMatrix(log1_predict, heartTest$HeartDisease_factor)
-# confusionMatrix(log2_predict, heartTest$HeartDisease_factor)
-# confusionMatrix(log3_predict, heartTest$HeartDisease_factor)
+confusionMatrix(log1_predict, test$Diabetes_factor)
+confusionMatrix(log2_predict, test$Diabetes_factor)
+confusionMatrix(log3_predict, test$Diabetes_factor)
 ```
 
 
@@ -140,16 +140,76 @@ library(haven)
 library(knitr)
 library(rgl)
 library(tree)
+library(caret)
 ```
 
 ```{r}
-my_tree <- train(Diabetes_factor ~ PhysHlth, 
+my_tree <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
                 data = train, 
                 method = "rpart", 
                 trControl = cv_settings,  
                 tuneGrid = expand.grid(cp = seq(0, 0.1, 0.001)))
-my_tree
+
+
+my_tree_predict <- predict(my_tree, test)
+
+summary(my_tree_predict)
+
 ```
 
+```{r}
+my_tree_2 <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
+                data = train, 
+                method = "rpart", 
+                trControl = cv_settings,  
+                tuneGrid = expand.grid(cp = seq(0, 0.5, 0.01)))
+
+
+my_tree_2_predict <- predict(my_tree_2, test)
+
+summary(my_tree_2_predict)
+```
+```{r}
+my_tree_3 <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
+                data = train, 
+                method = "rpart", 
+                trControl = cv_settings,  
+                tuneGrid = expand.grid(cp = seq(0, 0.01, 0.0001)))
+
+my_tree_3_predict <- predict(my_tree_3, test)
+
+summary(my_tree_3_predict)
+```
+
+```{r}
+#Confusion Matrices
+
+confusionMatrix(my_tree_predict, test$Diabetes_factor)
+confusionMatrix(my_tree_2_predict, test$Diabetes_factor)
+confusionMatrix(my_tree_3_predict, test$Diabetes_factor)
+```
+
+```{r}
+install.packages("ranger")
+```
+```{r}
+library(ranger)
+```
+
+
+# Random Forest
+
+```{r}
+rfFit <- train(Diabetes_factor ~ Age_factor + Sex_factor + HvyAlcoholConsump_factor + PhysActivity_factor,
+               data = train,
+               method = "ranger",
+               trControl = trainControl(method = "cv",
+                                        number = 3),
+               preProcess = c("center", "scale"),
+               tuneGrid = data.frame(mtry = 1:8, splitrule="gini", min.node.size=1
+                                     )
+               )
+rfFit
+```
 
 

@@ -144,6 +144,7 @@ help(hist)
 physhlth_plot <- ggplot(factor_data, aes(x = PhysHlth)) +
   geom_histogram(binwidth = 2, fill = "light blue", color = "black") +
   labs(title = "Distribution of 'Not Good' Physical Health Days", x = "Now thinking about your physical health,\n which includes physical illness and injury, for how many days during \n the past 30 days was your physical health not good?", y = "Frequency")
+physhlth_plot
 ```
 
 
@@ -151,6 +152,7 @@ physhlth_plot <- ggplot(factor_data, aes(x = PhysHlth)) +
 menthlth_plot <- ggplot(factor_data, aes(x = MentHlth)) +
   geom_histogram(binwidth = 2, fill = "light blue", color = "black") +
   labs(title = "Distribution of 'Not Good' Mental Health Days", x = "Now thinking about your mental health, \n which includes stress, depression, and problems with emotions, \n for how many days during the past 30 days \n was your mental health not good?", y = "Frequency")
+menthlth_plot
 ```
 
 
@@ -159,6 +161,7 @@ menthlth_plot <- ggplot(factor_data, aes(x = MentHlth)) +
 bmi_plot <- ggplot(factor_data, aes(x = BMI)) +
   geom_histogram(binwidth = 2, fill = "light blue", color = "black") +
   labs(title = "Distribution of BMI", x = "BMI", y = "Frequency")
+bmi_plot
 ```
 
 
