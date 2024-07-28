@@ -36,14 +36,14 @@ getwd()
 
 ```{r}
 # set the directory
-setwd("/Users/kyrakapsaskis/ST558 Final Project Folder/ST558-Final-Project")
+setwd("/Users/kyrakapsaskis/ST558_Final_Project_Folder/ST558-Final-Project")
 # this would be followed by read.csv with the file name instead of path
 ```
 
 ```{r}
 # read in the data using a relative path
 
-diabetes_data <- read.csv("/Users/kyrakapsaskis/ST558 Final Project Folder/ST558-Final-Project/diabetes_binary_health_indicators_BRFSS2015.csv")
+diabetes_data <- read.csv("/Users/kyrakapsaskis/ST558_Final_Project_Folder/ST558-Final-Project/diabetes_binary_health_indicators_BRFSS2015.csv")
 
 ```
 
