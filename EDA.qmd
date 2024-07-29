@@ -196,6 +196,36 @@ my_graph +
   geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
   facet_wrap(~ Sex_factor)
 ```
+
+```{r}
+my_graph <- ggplot(factor_data |> 
+                     drop_na(BMI, Diabetes_factor),
+                   aes(x = Diabetes_factor, y = BMI, fill = Diabetes_factor)) 
+
+```
+
+```{r}
+numeric_data <- factor_data[,c(5,16,17,23)]
+```
+
+```{r}
+help(pivot_longer)
+```
+```{r}
+long_numeric_data <- data.frame(pivot_longer(numeric_data, c(1:3)))
+is.data.frame(long_numeric_data)
+```
+
+```{r}
+ggplot(data = long_numeric_data,aes(x = Diabetes_factor, y = value, fill = Diabetes_factor))+ #change the second diabetes factor to sex factor if i want to add another variable for sex
+  geom_boxplot() +  
+  geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
+  facet_wrap(~ name,scales = "free_y")
+
+#for binary variables, do the same process of subsetting and pivoting data, then use geom_histogram() plot from above and add the same facet_wrap line from this plot to the end. Also change binwidth argument in geom_histogram to 1.
+```
+
+
 ```{r}
 my_graph2 <- ggplot(factor_data |> 
                      drop_na(MentHlth, PhysHlth),
