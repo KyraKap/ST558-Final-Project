@@ -277,6 +277,7 @@ my_table <- table(factor_data$Diabetes_factor, factor_data$PhysHlth)
 plot(my_table)
 ```
 
+
 Now let's visualize some of the summary statistics with a few plots.
 
 This first plot is exploring... and ... variables and this is meaningful because... The plot shows that the relationship....
