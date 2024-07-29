@@ -285,6 +285,7 @@ This first plot is exploring... and ... variables and this is meaningful because
 ```{r}
 # plot 1
 
+
 ```
 
 This second plot is exploring... and ... variables and this is meaningful because... The plot shows that the relationship....
