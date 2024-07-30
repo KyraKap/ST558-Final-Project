@@ -196,7 +196,6 @@ Now we are going to create some more summaries to further explore our data, spec
 
 ```{r}
 yes_no_data <- factor_data[,c(23:35, 37)]
-yes_no_data
 ```
 
 We are once again pivoting to longer format so that we can create a graph.
@@ -204,7 +203,7 @@ We are once again pivoting to longer format so that we can create a graph.
 ```{r}
 long_yes_no_data <- data.frame(pivot_longer(yes_no_data, c(2:14)))
 is.data.frame(long_yes_no_data)
-long_yes_no_data
+
 ```
 
 As part of our pre-processing, we want to combine some of the columns and add new column names that are more descriptive, so we can target what we are really trying to see, which is our response and predictor side by side. Now we can see the data separated into Yes/No for the risk factors combined with Yes/No for having diabetes. We can see the percentages, which is very helpful for understanding what experiences are seen the most often.

@@ -8,14 +8,53 @@ editor: visual
 #### Splitting the data into a test and training set
 
 ```{r}
+
 library(caret)
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(Hmisc)
+library(randomForest)
 ```
+
+```{r}
+diabetes_data <- read.csv("/Users/kyrakapsaskis/ST558_Final_Project_Folder/ST558-Final-Project/diabetes_binary_health_indicators_BRFSS2015.csv")
+```
+```{r}
+factor_data <- diabetes_data |>
+  mutate( 
+    Diabetes_factor = factor(Diabetes_binary, levels = c(0, 1), labels = c("No", "Yes")),
+    HighBP_factor = factor(HighBP, levels = c(0, 1), labels = c("No", "Yes")),
+    HighChol_factor = factor(HighChol, levels = c(0, 1), labels = c("No", "Yes")),
+    CholCheck_factor = factor(CholCheck, levels = c(0, 1), labels = c("No", "Yes")),
+    Smoker_factor = factor(Smoker, levels = c(0, 1), labels = c("No", "Yes")),
+    Stroke_factor = factor(Stroke, levels = c(0, 1), labels = c("No", "Yes")),
+    HeartDiseaseorAttack_factor = factor(HeartDiseaseorAttack, levels = c(0, 1), labels = c("No", "Yes")),
+    PhysActivity_factor = factor(PhysActivity, levels = c(0, 1), labels = c("No", "Yes")),
+    Fruits_factor = factor(Fruits, levels = c(0, 1), labels = c("No", "Yes")),
+    Veggies_factor = factor(Veggies, levels = c(0, 1), labels = c("No", "Yes")),
+    HvyAlcoholConsump_factor = factor(HvyAlcoholConsump, levels = c(0, 1), labels = c("No", "Yes")),
+    AnyHealthcare_factor = factor(AnyHealthcare, levels = c(0, 1), labels = c("No", "Yes")),
+    NoDocbcCost_factor = factor(NoDocbcCost, levels = c(0, 1), labels = c("No", "Yes")),
+    GenHlth_factor = factor(GenHlth, levels = c(1:5), labels = c("Excellent", "Very good", "Good", "Fair", "Poor")),
+    Diffwalk_factor = factor(DiffWalk, levels = c(0, 1), labels = c("No", "Yes")),
+    Sex_factor = factor(Sex, levels = c(0, 1), labels = c("Female", "Male")),
+    # non-binary
+    Age_factor = factor(Age, levels = c(1:13), labels = c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80 or older")),
+    Education_factor = factor(Education, levels = c(1:6), labels = c("No school", "Elementary", "Some high school", "High school graduate", "Some college or technical school", "College graduate")),
+    Income_factor = factor(Income, levels = c(1:8), labels = c("<$10k", "$10k-$15k", "$15k-$20k", "$20k-$25k", "$25k-$35k", "$35k-$50k", "$50k-$75k", "$75k<="))
+  )
+
+
+```
+
 
 ```{r}
 # set a seed for reproducibility
 set.seed(101)
 
-split <- createDataPartition(y = factor_data$Diabetes_factor, p = 0.7, list = FALSE)
+split <- caret::createDataPartition(y = factor_data$Diabetes_factor, p = 0.7, list = FALSE)
 train <- factor_data[split, ]
 test <- factor_data[-split, ]
 
