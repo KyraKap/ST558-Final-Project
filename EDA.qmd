@@ -47,12 +47,7 @@ diabetes_data <- read.csv("/Users/kyrakapsaskis/ST558_Final_Project_Folder/ST558
 
 ```
 
-Let's preview the data to make sure it's been read in properly
 
-```{r}
-diabetes_data
-
-```
 
 ## The data looks good! Now let's move forward!
 
