@@ -7,9 +7,9 @@ editor: visual
 
 ## Introduction to the Data
 
-For this project, we will be looking at .......
+For this project, we will be looking at diabetes data that includes a lot of risk factors and health-related variables that we can assess for their influence on whether or not a person has diabetes. 
 
-The purpose of our EDA is to... and we want to fit the models because...
+The purpose of our EDA is to find the best predictors for whether or not someone has diabetes. We want to fit the models because this is the best way to test different predictors but also different relationships to the response variable. A variety of models can be compared and assessed on different metrics to find the strongest relationships. 
 
 ```{r}
 # load in the necessary packages
@@ -129,11 +129,19 @@ sum(is.na(factor_data))
 #### Hooray, no missing data!!
 
 ```{r}
-twoway_table1 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
-twoway_table2 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
-twoway_table3 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
-twoway_table4 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
-twoway_table5 <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
+twoway_table1_Sex <- table(factor_data[, c("Diabetes_factor", "Sex_factor")])
+twoway_table2_Age <- table(factor_data[, c("Diabetes_factor", "Age_factor")])
+twoway_table3_HighChol <- table(factor_data[, c("Diabetes_factor", "HighChol_factor")])
+twoway_table4_PhysActivity <- table(factor_data[, c("Diabetes_factor", "PhysActivity_factor")])
+twoway_table5_GenHlth <- table(factor_data[, c("Diabetes_factor", "GenHlth_factor")])
+```
+
+```{r}
+summary(twoway_table1_Sex)
+twoway_table2_Age
+twoway_table3_HighChol
+twoway_table4_PhysActivity
+twoway_table5_GenHlth
 ```
 
 ```{r}
@@ -166,27 +174,24 @@ bmi_plot
 
 
 ```{r}
-#check distribution
+#some plotting ideas
 
-hist()
+hist() #for a single variable
 ggplot()
-# ggplot is cleanest
-plot()
+plot() #for multiple variables
+summary() #for binary variables
+table() #for binary variables
 
-# for binary variables, use summary()
-
-# visually
+# use stacked method or grouping of bars to show an additional variable that is binary with a different color or fill
 # binary - contingency table
 # categorical - use the multi-categorical and plot for each, univariate, histogram for age, general health, education, income.
-# bivariate graphs for binary variables- summary(diabetes_data)
-  # use one of the univariate plots and use color or fill of another variable that is binary - one way to do this, stacked method
-  # or do a grouping of bars - put the same info but next to each other, now you have the counts of each grouping and then together it would make that group.the different colors are side by side
 # use the diabetes binary variable to show that in a grouped plot - how does the response interact with the variables
-# numeric - also do univariate, this would be a dot plot, bar plots, either one, what looks best, makes sense, if it looks messy, change visual aid
-# 
+# numeric - use a univariate graph - a dot plot, bar plot
 ```
 
 ```{r}
+
+# GET RID OF THIS ONE???
 my_graph <- ggplot(factor_data |> 
                      drop_na(BMI, Diabetes_factor),
                    aes(x = Diabetes_factor, y = BMI, fill = Diabetes_factor)) 
@@ -198,19 +203,19 @@ my_graph +
 ```
 
 ```{r}
+
+# another bad graph
 my_graph <- ggplot(factor_data |> 
                      drop_na(BMI, Diabetes_factor),
                    aes(x = Diabetes_factor, y = BMI, fill = Diabetes_factor)) 
-
+my_graph + geom_boxplot()
 ```
 
 ```{r}
+#creating a new dataset with ONLY the numeric data so that I can pivot it and create a new graph with it
 numeric_data <- factor_data[,c(5,16,17,23)]
 ```
 
-```{r}
-help(pivot_longer)
-```
 ```{r}
 long_numeric_data <- data.frame(pivot_longer(numeric_data, c(1:3)))
 is.data.frame(long_numeric_data)
@@ -219,7 +224,7 @@ is.data.frame(long_numeric_data)
 ```{r}
 ggplot(data = long_numeric_data,aes(x = Diabetes_factor, y = value, fill = Diabetes_factor))+ #change the second diabetes factor to sex factor if i want to add another variable for sex
   geom_boxplot() +  
-  geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
+  #geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
   facet_wrap(~ name,scales = "free_y")
 
 #for binary variables, do the same process of subsetting and pivoting data, then use geom_histogram() plot from above and add the same facet_wrap line from this plot to the end. Also change binwidth argument in geom_histogram to 1.
@@ -227,9 +232,11 @@ ggplot(data = long_numeric_data,aes(x = Diabetes_factor, y = value, fill = Diabe
 
 
 ```{r}
+
+# ANOTHER BAD GRAPH
 my_graph2 <- ggplot(factor_data |> 
                      drop_na(MentHlth, PhysHlth),
-                   aes(x = PhysHlth, y = MentHlth, fill = PhysHlth)) 
+                   aes(x = BMI, y = MentHlth, fill = PhysHlth)) 
 
 my_graph2 + geom_point(size = 0.5) +      
   geom_smooth(method = lm)
@@ -248,9 +255,50 @@ table(diabetes_data$Age)
 
 ```{r}
 # producing summary statistics
+#imp_factor_variables <- factor_data[,c(23, )] |>
+  
+
+yes_no_data <- factor_data[,c(23:35, 37)]
+yes_no_data
+```
+
+```{r}
+long_yes_no_data <- data.frame(pivot_longer(yes_no_data, c(2:14)))
+is.data.frame(long_yes_no_data)
+long_yes_no_data
+```
+```{r}
+(summary_data <- long_yes_no_data[,] |>
+   
+  group_by(Diabetes_factor, value, name) |>
+  summarise(count = n()) |>
+   group_by(name) |>
+  mutate(percentage = count/sum(count)*100) |>
+   mutate(Diabetes_predictor = paste0(Diabetes_factor, "_",value), predictor = name))
+```
+
+
+
+```{r}
+#| fig-width: 20
+#| fig-height: 7
+
+#fill = "light blue", color = "black"
+(summary_yesno_barplot <- ggplot(summary_data, aes(x = predictor, y = percentage, fill = Diabetes_predictor)) +
+  geom_bar(stat = "Identity", aes(color = value, fill = Diabetes_factor), linewidth = 2, position = "dodge")) +
+  scale_fill_manual(values = c("lightgray", "darkgray"), name= "Diabetes Outcome") +
+  scale_color_manual(values = c("white", "black"), name= "Predictor Outcome")
+  
+  
+
 
 
 ```
+```{r}
+# variables to look at
+# 
+```
+
 
 ```{r}
 help(summarize)
@@ -258,6 +306,8 @@ help(summarize)
 
 
 ```{r}
+
+# Numeric summary - can I add to it? 
 factor_data |>
   group_by(Diabetes_factor) |>
   dplyr::summarize(
@@ -273,7 +323,7 @@ factor_data |>
 ```
 
 ```{r}
-my_table <- table(factor_data$Diabetes_factor, factor_data$PhysHlth)
+my_table <- table(factor_data$Diabetes_factor, factor_data$GenHlth_factor)
 plot(my_table)
 ```
 
@@ -284,7 +334,10 @@ This first plot is exploring... and ... variables and this is meaningful because
 
 ```{r}
 # plot 1
-
+ggplot(data = long_numeric_data,aes(x = Diabetes_factor, y = value, fill = factor_data$Sex_factor))+ #change the second diabetes factor to sex factor if i want to add another variable for sex
+  geom_boxplot() +  
+  #geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
+  facet_wrap(~ name,scales = "free_y")
 
 ```
 
