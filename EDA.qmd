@@ -83,10 +83,6 @@ The categorical variables are age, general health, education, income, sex (binar
 These are also categorical variables but they all follow the No/Yes pattern with 0's and 1's so it will be easier to change them all to factors.
 
 ```{r}
-describe(diabetes_data$GenHlth)
-```
-
-```{r}
 # convert the variables to factors with meaningful level names
 # 0 is female, 1 is male
 

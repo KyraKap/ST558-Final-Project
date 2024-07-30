@@ -104,7 +104,14 @@ function() {
 }
 
 
+# Example endpoints
 
-# curl "http://localhost:8000/echo?msg=Hello"
-# curl "http://localhost:8000/info"
-# curl "http://localhost:8000/pred?Age_factor=25-29&Sex_factor=Male&HvyAlcoholConsump_factor=Yes&PhysActivity_factor=No&HighChol_factor=Yes&HighBP_factor=Yes&GenHlth_factor=Good&AnyHealthcare_factor=No"
+# example from class that I left in as a test
+# curl -X 'GET' \ 'http://127.0.0.1:3037/echo?msg=Hey' \ -H 'accept: */*'
+
+
+# curl -X 'GET' \ 'http://127.0.0.1:3037/info' \ -H 'accept: */*'
+# curl http://127.0.0.1:3037/info
+
+# curl -X 'GET' \ 'http://127.0.0.1:3037/pred?Age_factor=18-24&Sex_factor=Female&HvyAlcoholConsump_factor=No&PhysActivity_factor=Yes&HighChol_factor=No&HighBP_factor=No&GenHlth_factor=Excellent&AnyHealthcare_factor=Yes' \ -H 'accept: */*'
+# http://127.0.0.1:3037/pred?Age_factor=18-24&Sex_factor=Female&HvyAlcoholConsump_factor=No&PhysActivity_factor=Yes&HighChol_factor=No&HighBP_factor=No&GenHlth_factor=Excellent&AnyHealthcare_factor=Yes
