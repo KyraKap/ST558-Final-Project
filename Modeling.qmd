@@ -7,35 +7,18 @@ editor: visual
 
 # Splitting the data into a test and training set
 
-```{r}
-help("createDataPartition")
-```
-
 
 ```{r}
 # set a seed for reproducibility
 set.seed(101)
 
-#indices to split on
-# train <- sample(1:nrow(heart_data), size = nrow(heart_data)*0.8)
-# test <- dplyr::setdiff(1:nrow(heart_data), train)
-
-#subset
-# heartTrain <- heart_data[train, ]
-# heartTest <- heart_data[test, ]
-
 split <- createDataPartition(y = factor_data$Diabetes_factor, p = 0.7, list = FALSE)
 train <- factor_data[split, ]
 test <- factor_data[-split, ]
 
-
 ```
 
 # fit three candidate logistic regression models and choose the best model using CV with log-loss as your metric.
-
-```{r}
-help(trainControl)
-```
 
 
 ```{r}
@@ -45,13 +28,11 @@ cv_settings <- trainControl(method = "cv", number = 5, summaryFunction = mnLogLo
 ```
 
 ## First Logistic Regression
-```{r}
-install.packages("rpart")
-```
+
+
 ```{r}
 library(rpart)
 ```
-
 
 ```{r}
 # running three separate logistic regressions with different predictors
@@ -59,13 +40,13 @@ library(rpart)
 
 ```{r}
 
-my_logreg_1 <- train(Diabetes_factor ~ Sex_factor + Age_factor, 
+my_logreg_1 <- train(Diabetes_factor ~ Sex_factor + Age_factor + HighChol_factor,
                      data = train, 
                      method = "glm",
                       
                      trControl = cv_settings,
                      metric = "logLoss")
-
+my_logreg_1
 log1_predict <- predict(my_logreg_1, test)
 
 summary(log1_predict)
@@ -89,6 +70,7 @@ log2_predict <- predict(my_logreg_2, test)
 summary(log2_predict)
 
 ```
+
 ```{r}
 # random testing out the describe function
 describe(factor_data$Diabetes_factor)
@@ -103,6 +85,7 @@ my_logreg_3 <- train(Diabetes_factor ~ MentHlth + Sex_factor + Age_factor + Frui
                      method = "glm", 
                      trControl = cv_settings,
                      metric = "logLoss")
+my_logreg_3
 
 log3_predict <- predict(my_logreg_3, test)
 
@@ -116,7 +99,15 @@ confusionMatrix(log1_predict, test$Diabetes_factor)
 confusionMatrix(log2_predict, test$Diabetes_factor)
 confusionMatrix(log3_predict, test$Diabetes_factor)
 ```
-
+# First log model
+###  logLoss  
+###  0.3709215
+# Second log model
+###  logLoss  
+###  0.3791157
+# Third log model
+###  logLoss  
+###  0.3445646
 
 # Tree models
 
@@ -133,7 +124,6 @@ library(caret)
 # one tree and one rf, put a lot more predictors, change tunegrid for this and 
 ```
 
-
 ```{r}
 my_tree <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
                 data = train, 
@@ -149,6 +139,11 @@ summary(my_tree_predict)
 ```
 
 ```{r}
+my_tree
+```
+
+
+```{r}
 my_tree_2 <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
                 data = train, 
                 method = "rpart", 
@@ -161,6 +156,10 @@ my_tree_2_predict <- predict(my_tree_2, test)
 summary(my_tree_2_predict)
 ```
 ```{r}
+my_tree_2
+```
+
+```{r}
 my_tree_3 <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
                 data = train, 
                 method = "rpart", 
@@ -170,6 +169,8 @@ my_tree_3 <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor 
 my_tree_3_predict <- predict(my_tree_3, test)
 
 summary(my_tree_3_predict)
+
+my_tree_3
 ```
 
 ```{r}
@@ -180,13 +181,20 @@ confusionMatrix(my_tree_2_predict, test$Diabetes_factor)
 confusionMatrix(my_tree_3_predict, test$Diabetes_factor)
 ```
 
-```{r}
-install.packages("ranger")
-```
+# First tree parameters
+###  logLoss  
+###  0.3635067
+# Second log model
+###  logLoss  
+###  0.3608280
+# Third log model
+###  logLoss  
+###  0.3587766
+
+
 ```{r}
 library(ranger)
 ```
-
 
 # Random Forest
 
@@ -196,16 +204,14 @@ library(ranger)
 # just one 
 # then pick between logistic 1, 2, 3, tree parameter 1, 2, 3, and rf which mtry was best
 set.seed(10)
-rfFit <- train(Diabetes_factor ~ Age_factor + Sex_factor + HvyAlcoholConsump_factor + PhysActivity_factor,
+rfFit <- train(Diabetes_factor ~ Age_factor + Sex_factor + HvyAlcoholConsump_factor + PhysActivity_factor + HighChol_factor + HighBP_factor + GenHlth_factor + AnyHealthcare_factor,
                data = train,
                method = "ranger",
                trControl = trainControl(method = "cv",
                                         number = 3),
                preProcess = c("center", "scale"),
-               tuneGrid = data.frame(mtry = 1:4, splitrule="gini", min.node.size=1
+               tuneGrid = data.frame(mtry = seq(1, 10, 3), splitrule="gini", min.node.size=1
                                      )
                )
 rfFit
 ```
-
-

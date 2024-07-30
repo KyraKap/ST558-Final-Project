@@ -7,9 +7,9 @@ editor: visual
 
 ## Introduction to the Data
 
-For this project, we will be looking at diabetes data that includes a lot of risk factors and health-related variables that we can assess for their influence on whether or not a person has diabetes. 
+For this project, we will be looking at diabetes data that includes various of risk factors and health-related variables that we can assess for their influence on whether or not a person has diabetes.
 
-The purpose of our EDA is to find the best predictors for whether or not someone has diabetes. We want to fit the models because this is the best way to test different predictors but also different relationships to the response variable. A variety of models can be compared and assessed on different metrics to find the strongest relationships. 
+The purpose of our EDA is to find the best predictors for whether or not someone has diabetes. We want to fit the models because this is the best way to test different predictors but also different relationships to the response variable. A variety of models can be compared and assessed on different metrics to find the strongest relationships.
 
 ```{r}
 # load in the necessary packages
@@ -25,7 +25,7 @@ library(randomForest)
 
 #### Read in the Diabetes data from the Diabetes Health Indicators Dataset
 
-Reading about the data at https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/ we can get some info on the variables. ...
+Reading about the data at https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/ we can get some info on the variables.
 
 Our response variable will be the Diabetes_binary variable.
 
@@ -137,15 +137,11 @@ twoway_table5_GenHlth <- table(factor_data[, c("Diabetes_factor", "GenHlth_facto
 ```
 
 ```{r}
-summary(twoway_table1_Sex)
+twoway_table1_Sex
 twoway_table2_Age
 twoway_table3_HighChol
 twoway_table4_PhysActivity
 twoway_table5_GenHlth
-```
-
-```{r}
-help(hist)
 ```
 
 ```{r}
@@ -155,15 +151,12 @@ physhlth_plot <- ggplot(factor_data, aes(x = PhysHlth)) +
 physhlth_plot
 ```
 
-
 ```{r}
 menthlth_plot <- ggplot(factor_data, aes(x = MentHlth)) +
   geom_histogram(binwidth = 2, fill = "light blue", color = "black") +
   labs(title = "Distribution of 'Not Good' Mental Health Days", x = "Now thinking about your mental health, \n which includes stress, depression, and problems with emotions, \n for how many days during the past 30 days \n was your mental health not good?", y = "Frequency")
 menthlth_plot
 ```
-
-
 
 ```{r}
 bmi_plot <- ggplot(factor_data, aes(x = BMI)) +
@@ -172,15 +165,14 @@ bmi_plot <- ggplot(factor_data, aes(x = BMI)) +
 bmi_plot
 ```
 
-
 ```{r}
 #some plotting ideas
 
-hist() #for a single variable
-ggplot()
-plot() #for multiple variables
-summary() #for binary variables
-table() #for binary variables
+# hist() #for a single variable
+# ggplot()
+# plot() #for multiple variables
+# summary() #for binary variables
+# table() #for binary variables
 
 # use stacked method or grouping of bars to show an additional variable that is binary with a different color or fill
 # binary - contingency table
@@ -192,23 +184,23 @@ table() #for binary variables
 ```{r}
 
 # GET RID OF THIS ONE???
-my_graph <- ggplot(factor_data |> 
-                     drop_na(BMI, Diabetes_factor),
-                   aes(x = Diabetes_factor, y = BMI, fill = Diabetes_factor)) 
-
-my_graph + 
-  geom_boxplot() +  
-  geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
-  facet_wrap(~ Sex_factor)
+# my_graph <- ggplot(factor_data |> 
+#                      drop_na(BMI, Diabetes_factor),
+#                    aes(x = Diabetes_factor, y = BMI, fill = Diabetes_factor)) 
+# 
+# my_graph + 
+#   geom_boxplot() +  
+#   geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
+#   facet_wrap(~ Sex_factor)
 ```
 
 ```{r}
 
 # another bad graph
-my_graph <- ggplot(factor_data |> 
-                     drop_na(BMI, Diabetes_factor),
-                   aes(x = Diabetes_factor, y = BMI, fill = Diabetes_factor)) 
-my_graph + geom_boxplot()
+# my_graph <- ggplot(factor_data |> 
+#                      drop_na(BMI, Diabetes_factor),
+#                    aes(x = Diabetes_factor, y = BMI, fill = Diabetes_factor)) 
+# my_graph + geom_boxplot()
 ```
 
 ```{r}
@@ -230,19 +222,16 @@ ggplot(data = long_numeric_data,aes(x = Diabetes_factor, y = value, fill = Diabe
 #for binary variables, do the same process of subsetting and pivoting data, then use geom_histogram() plot from above and add the same facet_wrap line from this plot to the end. Also change binwidth argument in geom_histogram to 1.
 ```
 
-
 ```{r}
 
 # ANOTHER BAD GRAPH
-my_graph2 <- ggplot(factor_data |> 
-                     drop_na(MentHlth, PhysHlth),
-                   aes(x = BMI, y = MentHlth, fill = PhysHlth)) 
-
-my_graph2 + geom_point(size = 0.5) +      
-  geom_smooth(method = lm)
+# my_graph2 <- ggplot(factor_data |> 
+#                      drop_na(MentHlth, PhysHlth),
+#                    aes(x = BMI, y = MentHlth, fill = PhysHlth)) 
+# 
+# my_graph2 + geom_point(size = 0.5) +      
+#   geom_smooth(method = lm)
 ```
-
-
 
 ## Summarizations
 
@@ -267,6 +256,7 @@ long_yes_no_data <- data.frame(pivot_longer(yes_no_data, c(2:14)))
 is.data.frame(long_yes_no_data)
 long_yes_no_data
 ```
+
 ```{r}
 (summary_data <- long_yes_no_data[,] |>
    
@@ -276,8 +266,6 @@ long_yes_no_data
   mutate(percentage = count/sum(count)*100) |>
    mutate(Diabetes_predictor = paste0(Diabetes_factor, "_",value), predictor = name))
 ```
-
-
 
 ```{r}
 #| fig-width: 20
@@ -294,16 +282,6 @@ long_yes_no_data
 
 
 ```
-```{r}
-# variables to look at
-# 
-```
-
-
-```{r}
-help(summarize)
-```
-
 
 ```{r}
 
@@ -322,24 +300,9 @@ factor_data |>
 
 ```
 
-```{r}
-my_table <- table(factor_data$Diabetes_factor, factor_data$GenHlth_factor)
-plot(my_table)
-```
-
-
 Now let's visualize some of the summary statistics with a few plots.
 
 This first plot is exploring... and ... variables and this is meaningful because... The plot shows that the relationship....
-
-```{r}
-# plot 1
-ggplot(data = long_numeric_data,aes(x = Diabetes_factor, y = value, fill = factor_data$Sex_factor))+ #change the second diabetes factor to sex factor if i want to add another variable for sex
-  geom_boxplot() +  
-  #geom_jitter(width = 0.2, alpha = 0.3, size = 0.01) +
-  facet_wrap(~ name,scales = "free_y")
-
-```
 
 This second plot is exploring... and ... variables and this is meaningful because... The plot shows that the relationship....
 
