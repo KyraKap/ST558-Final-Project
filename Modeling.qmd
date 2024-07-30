@@ -8,6 +8,10 @@ editor: visual
 #### Splitting the data into a test and training set
 
 ```{r}
+library(caret)
+```
+
+```{r}
 # set a seed for reproducibility
 set.seed(101)
 
