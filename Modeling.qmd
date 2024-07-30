@@ -18,7 +18,7 @@ test <- factor_data[-split, ]
 
 ```
 
-# fit three candidate logistic regression models and choose the best model using CV with log-loss as your metric.
+## Let's fit three different logistic regression models, where we change the predictors in each model and see which one is the best!
 
 
 ```{r}
@@ -32,10 +32,6 @@ cv_settings <- trainControl(method = "cv", number = 5, summaryFunction = mnLogLo
 
 ```{r}
 library(rpart)
-```
-
-```{r}
-# running three separate logistic regressions with different predictors
 ```
 
 ```{r}
@@ -91,6 +87,7 @@ log3_predict <- predict(my_logreg_3, test)
 
 summary(log3_predict)
 ```
+## The third model had the lowest log loss, so that would be the best one here. 
 
 ## Confusion Matrices
 
@@ -105,7 +102,7 @@ confusionMatrix(log3_predict, test$Diabetes_factor)
 # Second log model
 ###  logLoss  
 ###  0.3791157
-# Third log model - best one
+# Third log model - best one!!!
 ###  logLoss  
 ###  0.3445646
 
@@ -120,9 +117,10 @@ library(tree)
 library(caret)
 ```
 
-```{r}
-# one tree and one rf, put a lot more predictors, change tunegrid for this and 
-```
+## Now we are going to fit three different Classification Tree models, but instead of changing predictors, we will change the tuning parameters instead, and see which ones produce the best outcome. 
+
+
+## First tree model
 
 ```{r}
 my_tree <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
@@ -141,7 +139,7 @@ summary(my_tree_predict)
 ```{r}
 my_tree
 ```
-
+## Second tree model, with adjusted tuning parameters to see what happens
 
 ```{r}
 my_tree_2 <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
@@ -158,6 +156,7 @@ summary(my_tree_2_predict)
 ```{r}
 my_tree_2
 ```
+## Here is the third classification tree with adjusted parameters in the other direction
 
 ```{r}
 my_tree_3 <- train(Diabetes_factor ~ PhysHlth + HighChol_factor + Smoker_factor + GenHlth_factor,
@@ -172,6 +171,7 @@ summary(my_tree_3_predict)
 
 my_tree_3
 ```
+## So far, this third tree looks like the best one, for the same reason as above looking at the log loss. 
 
 ```{r}
 #Confusion Matrices
@@ -187,7 +187,7 @@ confusionMatrix(my_tree_3_predict, test$Diabetes_factor)
 # Second log model
 ###  logLoss  
 ###  0.3608280
-# Third log model - best one
+# Third log model - best one!!!
 ###  logLoss  
 ###  0.3573305
 
@@ -196,13 +196,10 @@ confusionMatrix(my_tree_3_predict, test$Diabetes_factor)
 library(ranger)
 ```
 
-# Random Forest
+# Random Forest model time! This one will be different because instead of changing the predictors we will change the 'mtry' value. First we will fit a sequence of mtry's and see which one is best. 
 
 ```{r}
 
-# put a lot of predictors, mtry is a sequence EXAMPLE MAYBE...seq(1, 10, 3)
-# just one 
-# then pick between logistic 1, 2, 3, tree parameter 1, 2, 3, and rf which mtry was best
 set.seed(10)
 rfFit <- train(Diabetes_factor ~ Age_factor + Sex_factor + HvyAlcoholConsump_factor + PhysActivity_factor + HighChol_factor + HighBP_factor + GenHlth_factor + AnyHealthcare_factor,
                data = train,
@@ -215,7 +212,7 @@ rfFit <- train(Diabetes_factor ~ Age_factor + Sex_factor + HvyAlcoholConsump_fac
                )
 rfFit
 ```
-
+## We tried 1, 4, 7, and 10 for the mtry - it is hard to choose the best model because of accuracy and kappa. it looks like 10 might be the best because it has a similar accuracy to 4 and 7, but the highest kappa. 
 
 # Mtry 4 and mtry 10 are the two potential best models! 
 
@@ -225,6 +222,8 @@ rfFit
 ###   7    0.8611419  0.08646859
 ###  10    0.8606858  0.10177019
 
+
+## now lets rename it as the best mtry
 ```{r}
 set.seed(10)
 rfFit_best_mtry <- train(Diabetes_factor ~ Age_factor + Sex_factor + HvyAlcoholConsump_factor + PhysActivity_factor + HighChol_factor + HighBP_factor + GenHlth_factor + AnyHealthcare_factor,
