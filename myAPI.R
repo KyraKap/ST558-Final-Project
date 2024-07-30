@@ -103,6 +103,8 @@ function() {
   ))
 }
 
+
+
 # curl "http://localhost:8000/echo?msg=Hello"
 # curl "http://localhost:8000/info"
 # curl "http://localhost:8000/pred?Age_factor=25-29&Sex_factor=Male&HvyAlcoholConsump_factor=Yes&PhysActivity_factor=No&HighChol_factor=Yes&HighBP_factor=Yes&GenHlth_factor=Good&AnyHealthcare_factor=No"
