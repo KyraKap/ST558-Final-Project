@@ -12,7 +12,7 @@ library(caret)
 library(randomForest)
 
 # read in the data
-diabetes_data <- read.csv("diabetes_binary_health_indicators_BRFSS2015.csv")
+diabetes_data <- read.csv("/Users/kyrakapsaskis/ST558_Final_Project_Folder/ST558-Final-Project/diabetes_binary_health_indicators_BRFSS2015.csv")
 
 # define the factor variables
 
