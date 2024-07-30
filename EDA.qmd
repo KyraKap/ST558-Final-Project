@@ -7,7 +7,7 @@ editor: visual
 
 ## Introduction to the Data
 
-For this project, we will be looking at diabetes data that includes various of risk factors and health-related variables that we can assess for their influence on whether or not a person has diabetes.
+For this project, we will be looking at diabetes data that includes various risk factors and health-related variables that we can assess for their influence on whether or not a person has diabetes.
 
 The purpose of our EDA is to find the best predictors for whether or not someone has diabetes. We want to fit the models because this is the best way to test different predictors but also different relationships to the response variable. A variety of models can be compared and assessed on different metrics to find the strongest relationships.
 

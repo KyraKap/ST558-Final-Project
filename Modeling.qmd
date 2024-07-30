@@ -105,7 +105,7 @@ confusionMatrix(log3_predict, test$Diabetes_factor)
 # Second log model
 ###  logLoss  
 ###  0.3791157
-# Third log model
+# Third log model - best one
 ###  logLoss  
 ###  0.3445646
 
@@ -187,9 +187,9 @@ confusionMatrix(my_tree_3_predict, test$Diabetes_factor)
 # Second log model
 ###  logLoss  
 ###  0.3608280
-# Third log model
+# Third log model - best one
 ###  logLoss  
-###  0.3587766
+###  0.3573305
 
 
 ```{r}
@@ -224,3 +224,48 @@ rfFit
 ###   4    0.8612940  0.05652040
 ###   7    0.8611419  0.08646859
 ###  10    0.8606858  0.10177019
+
+```{r}
+set.seed(10)
+rfFit_best_mtry <- train(Diabetes_factor ~ Age_factor + Sex_factor + HvyAlcoholConsump_factor + PhysActivity_factor + HighChol_factor + HighBP_factor + GenHlth_factor + AnyHealthcare_factor,
+               data = train,
+               method = "ranger",
+               trControl = trainControl(method = "cv",
+                                        number = 3),
+               preProcess = c("center", "scale"),
+               tuneGrid = data.frame(mtry = 10, splitrule="gini", min.node.size=1
+                                     )
+               )
+rfFit_best_mtry
+```
+
+```{r}
+rfFit_best_predict <- predict(rfFit_best_mtry, test)
+
+```
+```{r}
+summary(rfFit_best_predict)
+```
+```{r}
+confusionMatrix(rfFit_best_predict, test$Diabetes_factor)
+```
+
+
+```{r}
+confusionMatrix(log3_predict, test$Diabetes_factor)
+```
+```{r}
+confusionMatrix(my_tree_3_predict, test$Diabetes_factor)
+```
+
+```{r}
+confusionMatrix(rfFit_best_predict, test$Diabetes_factor)
+```
+
+```{r}
+# THIS IS WHAT I TYPED INTO MY COMPUTER TERMINAL
+# docker image ls
+# docker run -p 8000:8000 rapi
+# http://127.0.0.1:8000/
+```
+
