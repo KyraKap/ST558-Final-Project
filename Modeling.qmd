@@ -215,3 +215,12 @@ rfFit <- train(Diabetes_factor ~ Age_factor + Sex_factor + HvyAlcoholConsump_fac
                )
 rfFit
 ```
+
+
+# Mtry 4 and mtry 10 are the two potential best models! 
+
+###   mtry  Accuracy   Kappa     
+###   1    0.8606633  0.00000000
+###   4    0.8612940  0.05652040
+###   7    0.8611419  0.08646859
+###  10    0.8606858  0.10177019
